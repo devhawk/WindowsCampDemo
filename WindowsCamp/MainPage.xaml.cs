@@ -34,5 +34,11 @@ namespace WindowsCamp
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            var wcc = new WindowsCampComponent.Class1();
+            myText.Text = wcc.SayHello("Herb Sutter");
+        }
     }
 }

@@ -8,7 +8,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-
-    </Grid>
+    <StackPanel Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <Button Click="Button_Click_1">Click me</Button>
+        <TextBlock x:Name="myText" FontSize="20"></TextBlock>
+        <Image x:Name="myImage"></Image>
+    </StackPanel>
 </Page>
