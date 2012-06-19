@@ -18,8 +18,7 @@ Class1::Class1()
 
 IAsyncOperation<IRandomAccessStream^>^ Class1::GetPlasmaImageAsync(unsigned int width, unsigned int height)
 {
-    return create_async([width, height]() {
-        return create_task([width, height]() {
+    auto createImageTask = create_task([width, height]() {
             const auto FILENAME = L"plasma.bmp";
 
             //create the image object
@@ -49,7 +48,8 @@ IAsyncOperation<IRandomAccessStream^>^ Class1::GetPlasmaImageAsync(unsigned int 
         }).then([](StorageFile^ file) {
             return file->OpenAsync(FileAccessMode::Read);
         });
-    });
+
+    return create_async([createImageTask]() { return createImageTask; });
 }
 
 
