@@ -18,41 +18,38 @@ Class1::Class1()
 
 IAsyncOperation<IRandomAccessStream^>^ Class1::GetPlasmaImageAsync(unsigned int width, unsigned int height)
 {
-    //get the temp filename
-    auto tempFolder = ApplicationData::Current->TemporaryFolder;
+    return create_async([width, height]() {
+        return create_task([width, height]() {
+            const auto FILENAME = L"plasma.bmp";
 
-    wstring tempFolderPath(tempFolder->Path->Data());
-    string folderPath(begin(tempFolderPath), end(tempFolderPath));
+            //create the image object
+            bitmap_image image(width, height);
+            image.clear();
 
-    auto filePath = folderPath.append("\\plasma.bmp");
+            double c1 = 0.9;
+            double c2 = 0.5;
+            double c3 = 0.3;
+            double c4 = 0.7;
 
-    //create the image object
-    bitmap_image image(width, height);
-    image.clear();
+            ::srand(0xA5AA5AA5);
 
-    double c1 = 0.9;
-    double c2 = 0.5;
-    double c3 = 0.3;
-    double c4 = 0.7;
+            //generate plasma image
+            plasma(image,0,0,image.width(),image.height(),c1,c2,c3,c4,3.0,jet_colormap);
 
-    ::srand(0xA5AA5AA5);
+            //get the temp filename
+            auto tempFilePath = wstring(ApplicationData::Current->TemporaryFolder->Path->Data())
+                .append(L"\\").append(FILENAME);
 
-    //generate plasma image
-    plasma(image,0,0,image.width(),image.height(),c1,c2,c3,c4,3.0,jet_colormap);
+            //Save the image to the file
+            image.save_image(string(begin(tempFilePath), end(tempFilePath)));
 
-    //Save the image to the file
-    image.save_image(filePath);
-
-    //reopen the image file using WinRT
-    IAsyncOperation<StorageFile^>^ getFileAsyncOp = tempFolder->GetFileAsync(ref new String(L"plasma.bmp"));
-
-    task<StorageFile^> getFileTask(getFileAsyncOp);
-
-    task<IRandomAccessStream^> openFileTask = getFileTask.then([](StorageFile^ storageFile) {
-        return storageFile->OpenAsync(FileAccessMode::Read);
+            return ref new String(FILENAME);
+        }).then([](String^ filename) {
+            return ApplicationData::Current->TemporaryFolder->GetFileAsync(filename);
+        }).then([](StorageFile^ file) {
+            return file->OpenAsync(FileAccessMode::Read);
+        });
     });
-
-    return create_async([openFileTask]() { return openFileTask; });
 }
 
 
