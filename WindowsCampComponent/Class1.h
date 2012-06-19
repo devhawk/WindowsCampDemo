@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 using namespace Platform;
+using namespace Windows::Foundation;
+using namespace Windows::Storage::Streams;
 
 namespace WindowsCampComponent
 {
@@ -14,5 +16,7 @@ namespace WindowsCampComponent
                 ref new String(L"Hello there "),
                 name);
         };
+
+        IAsyncOperation<IRandomAccessStream^>^ GetPlasmaImageAsync(unsigned int width, unsigned int height);
     };
 }

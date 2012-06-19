@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -35,10 +36,16 @@ namespace WindowsCamp
         {
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
             var wcc = new WindowsCampComponent.Class1();
             myText.Text = wcc.SayHello("Herb Sutter");
+
+            var stm = await wcc.GetPlasmaImageAsync(800, 600);
+
+            var bitmap = new BitmapImage();
+            bitmap.SetSource(stm);
+            myImage.Source = bitmap;
         }
     }
 }
