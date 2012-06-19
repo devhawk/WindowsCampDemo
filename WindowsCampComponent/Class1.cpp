@@ -44,14 +44,15 @@ IAsyncOperation<IRandomAccessStream^>^ Class1::GetPlasmaImageAsync(unsigned int 
     image.save_image(filePath);
 
     //reopen the image file using WinRT
-    task<StorageFile^> getFileTask(tempFolder->GetFileAsync(ref new String(L"plasma.bmp")));
+    IAsyncOperation<StorageFile^>^ getFileAsyncOp = tempFolder->GetFileAsync(ref new String(L"plasma.bmp"));
 
-    return create_async(
-        [getFileTask]() -> task<IRandomAccessStream^> {
-            return getFileTask.then([](StorageFile^ storageFile) {
-                return storageFile->OpenAsync(FileAccessMode::Read);
-            });
+    task<StorageFile^> getFileTask(getFileAsyncOp);
+
+    task<IRandomAccessStream^> openFileTask = getFileTask.then([](StorageFile^ storageFile) {
+        return storageFile->OpenAsync(FileAccessMode::Read);
     });
+
+    return create_async([openFileTask]() { return openFileTask; });
 }
 
 
