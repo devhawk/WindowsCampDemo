@@ -25,15 +25,11 @@ IAsyncOperation<IRandomAccessStream^>^ Class1::GetPlasmaImageAsync(unsigned int 
             bitmap_image image(width, height);
             image.clear();
 
-            double c1 = 0.9;
-            double c2 = 0.5;
-            double c3 = 0.3;
-            double c4 = 0.7;
-
             ::srand(0xA5AA5AA5);
 
             //generate plasma image
-            plasma(image,0,0,image.width(),image.height(),c1,c2,c3,c4,3.0,jet_colormap);
+            plasma(image, 0, 0, image.width(), image.height(),
+                0.9, 0.5, 0.3, 0.7, 3.0, jet_colormap);
 
             //get the temp filename
             auto tempFilePath = wstring(ApplicationData::Current->TemporaryFolder->Path->Data())
